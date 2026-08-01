@@ -93,6 +93,11 @@ button { touch-action: manipulation; }
 .manual-entry input { border-radius: 13px 0 0 13px; }
 .manual-entry input:focus, .register-card input:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(21,95,79,.12); }
 .manual-entry button { border: 0; background: var(--lime); color: var(--green); border-radius: 0 13px 13px 0; padding: 0 20px; font-weight: 850; cursor: pointer; }
+.customer-entry { margin-top: 18px; display: grid; gap: 8px; }
+.customer-entry label { color: var(--muted); font-size: 13px; font-weight: 750; }
+.customer-entry input { width: 100%; border: 1px solid var(--line); border-radius: 13px; background: white; color: var(--ink); padding: 14px 15px; outline: none; font-size: 16px; }
+.customer-entry input:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(21,95,79,.12); }
+.customer-entry small { color: var(--muted); font-size: 11px; }
 
 .status-strip { margin-top: 20px; padding: 13px 14px; border-radius: 13px; background: #edf3ee; color: #365048; display: flex; gap: 10px; align-items: center; font-size: 13px; line-height: 1.45; }
 .status-dot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: #2a9d72; box-shadow: 0 0 0 4px rgba(42,157,114,.12); }
@@ -192,7 +197,10 @@ button { touch-action: manipulation; }
 .pdf-capture .receipt-heading h2 { font-size: 18px; }
 .pdf-capture .item-count { font-size: 24px; color: black; }
 .pdf-capture .receipt-meta { padding: 11px 0; font-size: 11px; border-bottom: 1px dashed #555; }
-.pdf-capture .receipt-meta span { display: block; margin-top: 4px; }
+.pdf-capture .receipt-meta > span { display: block; }
+.pdf-capture .document-customer { margin: 12px 0 0; display: grid; gap: 5px; }
+.pdf-capture .document-customer span { color: #333; font-size: 9px; }
+.pdf-capture .document-customer strong { font-size: 14px; }
 .pdf-capture .cart-list { max-height: none; overflow: visible; }
 .pdf-capture .cart-line { grid-template-columns: 30px 1fr auto; gap: 8px; padding: 11px 0; break-inside: avoid; }
 .pdf-capture .line-main h3 { font-size: 12px; }
@@ -203,6 +211,8 @@ button { touch-action: manipulation; }
 .pdf-capture .total-panel small, .pdf-capture .total-panel strong { color: black; }
 .pdf-capture .total-panel strong { font-size: 28px; }
 .pdf-capture .receipt-footer { padding: 30px 0 12px; text-align: center; font-size: 11px; }
+.pdf-capture .receipt-footer strong, .pdf-capture .receipt-footer span { display: block; }
+.pdf-capture .receipt-footer span { margin-top: 4px; }
 
 @media (max-width: 820px) {
   .checkout-grid { grid-template-columns: 1fr; }
@@ -242,7 +252,10 @@ button { touch-action: manipulation; }
   .receipt-heading h2 { font-size: 18px; }
   .item-count { font-size: 24px; color: black; }
   .receipt-meta { padding: 3mm 0; font-size: 11px; border-bottom: 1px dashed #555; }
-  .receipt-meta span { display: block; margin-top: 1mm; }
+  .receipt-meta > span { display: block; }
+  .document-customer { margin: 3mm 0 0; display: grid; gap: 1mm; }
+  .document-customer span { color: #333; font-size: 9px; }
+  .document-customer strong { font-size: 14px; }
   .cart-list { max-height: none; overflow: visible; }
   .cart-line { grid-template-columns: 8mm 1fr auto; gap: 2mm; padding: 3mm 0; break-inside: avoid; }
   .line-main h3 { font-size: 12px; }
@@ -253,4 +266,6 @@ button { touch-action: manipulation; }
   .total-panel small { color: black; }
   .total-panel strong { color: black; font-size: 28px; }
   .receipt-footer { padding-top: 8mm; text-align: center; font-size: 11px; }
+  .receipt-footer strong, .receipt-footer span { display: block; }
+  .receipt-footer span { margin-top: 1mm; }
 }

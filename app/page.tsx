@@ -34,6 +34,10 @@ function normalizeCode(value: string) {
   return value.trim().replace(/\s+/g, "");
 }
 
+function documentDate(value: Date) {
+  return `${value.getFullYear()}年${value.getMonth() + 1}月${value.getDate()}日`;
+}
+
 function parseSmartCode(rawValue: string): Product | null {
   const raw = rawValue.trim();
 
@@ -78,6 +82,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>(demoProducts);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [manualCode, setManualCode] = useState("");
+  const [customerName, setCustomerName] = useState("");
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scannerMessage, setScannerMessage] = useState("カメラを商品コードに向けてください");
   const [lastScannedProduct, setLastScannedProduct] = useState<Product | null>(null);
@@ -99,6 +104,7 @@ export default function Home() {
   const draggingCodeRef = useRef("");
   const lastDragTargetRef = useRef("");
   const manualInputRef = useRef<HTMLInputElement>(null);
+  const customerInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -401,6 +407,7 @@ export default function Home() {
   function clearCart() {
     if (cart.length === 0 || window.confirm("会計中の商品をすべて取り消しますか？")) {
       setCart([]);
+      setCustomerName("");
       setNotice("新しい会計を開始できます。");
     }
   }
@@ -410,7 +417,12 @@ export default function Home() {
       setNotice("印刷する商品がありません。");
       return;
     }
-    setReceiptTime(new Date().toLocaleString("ja-JP"));
+    if (!customerName.trim()) {
+      setNotice("納品書に記載するお客様名を入力してください。");
+      customerInputRef.current?.focus();
+      return;
+    }
+    setReceiptTime(documentDate(new Date()));
     window.setTimeout(() => window.print(), 60);
   }
 
@@ -419,13 +431,18 @@ export default function Home() {
       setNotice("保存する商品がありません。");
       return;
     }
+    if (!customerName.trim()) {
+      setNotice("納品書に記載するお客様名を入力してください。");
+      customerInputRef.current?.focus();
+      return;
+    }
 
     const receipt = receiptRef.current;
     if (!receipt) return;
 
     const savedAt = new Date();
-    setReceiptTime(savedAt.toLocaleString("ja-JP"));
-    setNotice("会計表のPDFを作成しています…");
+    setReceiptTime(documentDate(savedAt));
+    setNotice("納品書のPDFを作成しています…");
 
     let capture: HTMLElement | null = null;
     try {
@@ -470,16 +487,16 @@ export default function Home() {
         String(savedAt.getHours()).padStart(2, "0"),
         String(savedAt.getMinutes()).padStart(2, "0"),
       ].join("");
-      const fileName = `KNレジ_会計表_${timestamp}.pdf`;
+      const fileName = `納品書_${timestamp}.pdf`;
       const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
 
       if (navigator.canShare?.({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
-            title: "KNレジ 会計表",
+            title: "納品書",
           });
-          setNotice("会計表のPDFを共有しました。");
+          setNotice("納品書のPDFを共有しました。");
         } catch (error) {
           if (error instanceof DOMException && error.name === "AbortError") {
             setNotice("PDFの保存をキャンセルしました。");
@@ -496,7 +513,7 @@ export default function Home() {
         link.click();
         link.remove();
         window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        setNotice("会計表のPDFを保存しました。");
+        setNotice("納品書のPDFを保存しました。");
       }
     } catch {
       setNotice("PDFを作成できませんでした。もう一度お試しください。");
@@ -547,6 +564,19 @@ export default function Home() {
                 <button type="submit">追加</button>
               </div>
             </form>
+            <div className="customer-entry">
+              <label htmlFor="customer-name">お客様名</label>
+              <input
+                ref={customerInputRef}
+                id="customer-name"
+                type="text"
+                autoComplete="name"
+                value={customerName}
+                onChange={(event) => setCustomerName(event.target.value)}
+                placeholder="例：山田 太郎"
+              />
+              <small>納品書には「様」を付けて表示します</small>
+            </div>
             <div className="status-strip" role="status">
               <span className="status-dot" />
               {notice}
@@ -567,14 +597,17 @@ export default function Home() {
           <div className="receipt-heading">
             <div>
               <p className="section-kicker">現在の会計</p>
-              <h2>お買い上げ商品</h2>
+              <h2>納品書</h2>
             </div>
             <div className="item-count">{itemCount}<small>点</small></div>
           </div>
 
           <div className="receipt-meta print-only">
-            <strong>KNレジ 会計票</strong>
-            <span>{receiptTime}</span>
+            <span className="document-date">{receiptTime}</span>
+            <p className="document-customer">
+              <span>お客様名</span>
+              <strong>{customerName.trim()} 様</strong>
+            </p>
           </div>
 
           {cart.length === 0 ? (
@@ -643,7 +676,11 @@ export default function Home() {
           <p className="print-note no-print">
             PDF保存：Appleの共有画面から「ファイルに保存」→ iCloud Drive ／ 印刷：AirPrint対応プリンターを選択
           </p>
-          <footer className="receipt-footer print-only">ご利用ありがとうございました</footer>
+          <footer className="receipt-footer print-only">
+            <strong>有限会社河津内装</strong>
+            <span>〒811-2112福岡県糟屋郡須惠町植木184-23</span>
+            <span>☎092-936-0919</span>
+          </footer>
         </section>
       </section>
 

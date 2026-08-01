@@ -32,9 +32,13 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /<title>KNレジ \| カメラでかんたん会計<\/title>/);
   assert.match(html, /<h1>KNレジ<\/h1>/);
   assert.match(html, /コードを読み取る/);
-  assert.match(html, /お買い上げ商品/);
+  assert.match(html, /納品書/);
+  assert.match(html, /お客様名/);
   assert.match(html, /PDFで保存/);
-  assert.match(html, /<strong>KNレジ 会計票<\/strong><span><\/span>/);
+  assert.doesNotMatch(html, /KNレジ 会計票/);
+  assert.match(html, /有限会社河津内装/);
+  assert.match(html, /〒811-2112福岡県糟屋郡須惠町植木184-23/);
+  assert.match(html, /☎092-936-0919/);
   assert.match(html, /role="status"/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
 });
@@ -61,8 +65,9 @@ test("keeps receipt time deterministic until printing", async () => {
   ]);
 
   assert.match(page, /const \[receiptTime, setReceiptTime\] = useState\(""\)/);
-  assert.match(page, /setReceiptTime\(new Date\(\)\.toLocaleString\("ja-JP"\)\)/);
-  assert.match(page, /<span>\{receiptTime\}<\/span>/);
+  assert.match(page, /setReceiptTime\(documentDate\(new Date\(\)\)\)/);
+  assert.match(page, /<span className="document-date">\{receiptTime\}<\/span>/);
+  assert.match(page, /getFullYear\(\).*年/);
   assert.doesNotMatch(page, /useState\(\(\) => new Date\(\)\)/);
   assert.match(layout, /KNレジ \| カメラでかんたん会計/);
   assert.match(layout, /icon: \[\{ url: "\/kn-logo\.png"/);
