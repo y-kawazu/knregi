@@ -418,38 +418,9 @@ export default function Home() {
       setNotice("保存する商品がありません。");
       return;
     }
-
-    const savedAt = new Date();
-    const rows: Array<Array<string | number>> = [
-      ["KNレジ 会計表"],
-      ["保存日時", savedAt.toLocaleString("ja-JP")],
-      [],
-      ["No.", "商品コード", "商品名", "単価（税込）", "数量", "小計（税込）"],
-      ...cart.map((item, index) => [
-        index + 1,
-        item.code,
-        item.name,
-        item.price,
-        item.quantity,
-        item.price * item.quantity,
-      ]),
-      [],
-      ["合計（税込）", "", "", "", itemCount, total],
-    ];
-    const csv = `\uFEFF${rows
-      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
-      .join("\r\n")}`;
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    const timestamp = savedAt.toISOString().replace(/[:.]/g, "-");
-    link.href = url;
-    link.download = `KNレジ_会計表_${timestamp}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setNotice("会計表をCSVファイルで保存しました。");
+    setReceiptTime(new Date().toLocaleString("ja-JP"));
+    setNotice("共有から「ファイルに保存」を選び、iCloud DriveへPDF保存してください。");
+    window.setTimeout(() => window.print(), 60);
   }
 
   return (
@@ -581,13 +552,15 @@ export default function Home() {
           <div className="checkout-actions no-print">
             <button className="clear-button" type="button" onClick={clearCart}>会計をクリア</button>
             <button className="save-receipt-button" type="button" onClick={saveReceipt} disabled={cart.length === 0}>
-              会計表を保存
+              PDFで保存
             </button>
             <button className="print-button" type="button" onClick={printReceipt} disabled={cart.length === 0}>
               会計票を印刷
             </button>
           </div>
-          <p className="print-note no-print">iPad・iPhoneでは印刷画面からAirPrint対応プリンターを選べます。</p>
+          <p className="print-note no-print">
+            PDF保存：共有 → ファイルに保存 → iCloud Drive ／ 印刷：AirPrint対応プリンターを選択
+          </p>
           <footer className="receipt-footer print-only">ご利用ありがとうございました</footer>
         </section>
       </section>
