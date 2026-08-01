@@ -1,0 +1,10 @@
+{
+  "name": "KNレジ",
+  "short_name": "KNレジ",
+  "description": "カメラで商品コードを読み取る、かんたん会計アプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eeeae0",
+  "theme_color": "#0c382f",
+  "lang": "ja"
+}
