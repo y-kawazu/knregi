@@ -1,7 +1,7 @@
 "use client";
 
 import { BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type Product = {
   code: string;
@@ -89,11 +89,14 @@ export default function Home() {
   const [addAfterSave, setAddAfterSave] = useState(true);
   const [notice, setNotice] = useState("準備完了。商品をスキャンしてください。");
   const [receiptTime, setReceiptTime] = useState("");
+  const [draggingCode, setDraggingCode] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const lastScanRef = useRef({ value: "", time: 0 });
+  const draggingCodeRef = useRef("");
+  const lastDragTargetRef = useRef("");
   const manualInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -334,6 +337,66 @@ export default function Home() {
     );
   }
 
+  function moveCartItem(sourceCode: string, targetCode: string) {
+    if (!sourceCode || sourceCode === targetCode) return;
+    setCart((current) => {
+      const sourceIndex = current.findIndex((item) => item.code === sourceCode);
+      const targetIndex = current.findIndex((item) => item.code === targetCode);
+      if (sourceIndex < 0 || targetIndex < 0) return current;
+      const next = [...current];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+  }
+
+  function moveCartItemByKeyboard(code: string, direction: -1 | 1) {
+    setCart((current) => {
+      const index = current.findIndex((item) => item.code === code);
+      const targetIndex = index + direction;
+      if (index < 0 || targetIndex < 0 || targetIndex >= current.length) return current;
+      const next = [...current];
+      [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+      return next;
+    });
+  }
+
+  function startDragging(event: ReactPointerEvent<HTMLButtonElement>, code: string) {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    draggingCodeRef.current = code;
+    lastDragTargetRef.current = code;
+    setDraggingCode(code);
+  }
+
+  function continueDragging(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (!draggingCodeRef.current) return;
+    event.preventDefault();
+    const target = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>("[data-cart-code]");
+    const targetCode = target?.dataset.cartCode ?? "";
+    if (targetCode && targetCode !== lastDragTargetRef.current) {
+      lastDragTargetRef.current = targetCode;
+      moveCartItem(draggingCodeRef.current, targetCode);
+    }
+  }
+
+  function stopDragging(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    draggingCodeRef.current = "";
+    lastDragTargetRef.current = "";
+    setDraggingCode("");
+  }
+
+  function handleDragKey(event: KeyboardEvent<HTMLButtonElement>, code: string) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    moveCartItemByKeyboard(code, event.key === "ArrowUp" ? -1 : 1);
+  }
+
   function clearCart() {
     if (cart.length === 0 || window.confirm("会計中の商品をすべて取り消しますか？")) {
       setCart([]);
@@ -348,6 +411,45 @@ export default function Home() {
     }
     setReceiptTime(new Date().toLocaleString("ja-JP"));
     window.setTimeout(() => window.print(), 60);
+  }
+
+  function saveReceipt() {
+    if (cart.length === 0) {
+      setNotice("保存する商品がありません。");
+      return;
+    }
+
+    const savedAt = new Date();
+    const rows: Array<Array<string | number>> = [
+      ["KNレジ 会計表"],
+      ["保存日時", savedAt.toLocaleString("ja-JP")],
+      [],
+      ["No.", "商品コード", "商品名", "単価（税込）", "数量", "小計（税込）"],
+      ...cart.map((item, index) => [
+        index + 1,
+        item.code,
+        item.name,
+        item.price,
+        item.quantity,
+        item.price * item.quantity,
+      ]),
+      [],
+      ["合計（税込）", "", "", "", itemCount, total],
+    ];
+    const csv = `\uFEFF${rows
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+      .join("\r\n")}`;
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const timestamp = savedAt.toISOString().replace(/[:.]/g, "-");
+    link.href = url;
+    link.download = `KNレジ_会計表_${timestamp}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setNotice("会計表をCSVファイルで保存しました。");
   }
 
   return (
@@ -430,8 +532,28 @@ export default function Home() {
           ) : (
             <div className="cart-list">
               {cart.map((item, index) => (
-                <article className="cart-line" key={item.code}>
-                  <div className="line-number">{String(index + 1).padStart(2, "0")}</div>
+                <article
+                  className={`cart-line${draggingCode === item.code ? " is-dragging" : ""}`}
+                  data-cart-code={item.code}
+                  key={item.code}
+                >
+                  <div className="line-order">
+                    <div className="line-number">{String(index + 1).padStart(2, "0")}</div>
+                    <button
+                      className="drag-handle no-print"
+                      type="button"
+                      aria-label={`${item.name}の表示順を変更`}
+                      aria-pressed={draggingCode === item.code}
+                      title="ドラッグして順番を変更"
+                      onPointerDown={(event) => startDragging(event, item.code)}
+                      onPointerMove={continueDragging}
+                      onPointerUp={stopDragging}
+                      onPointerCancel={stopDragging}
+                      onKeyDown={(event) => handleDragKey(event, item.code)}
+                    >
+                      <span aria-hidden="true">⠿</span>
+                    </button>
+                  </div>
                   <div className="line-main">
                     <h3>{item.name}</h3>
                     <p>{item.code} · 単価 {yen(item.price)}</p>
@@ -458,6 +580,9 @@ export default function Home() {
 
           <div className="checkout-actions no-print">
             <button className="clear-button" type="button" onClick={clearCart}>会計をクリア</button>
+            <button className="save-receipt-button" type="button" onClick={saveReceipt} disabled={cart.length === 0}>
+              会計表を保存
+            </button>
             <button className="print-button" type="button" onClick={printReceipt} disabled={cart.length === 0}>
               会計票を印刷
             </button>

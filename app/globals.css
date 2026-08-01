@@ -111,8 +111,13 @@ button { touch-action: manipulation; }
 .empty-cart { min-height: 310px; display: grid; place-content: center; justify-items: center; color: #88918d; text-align: center; line-height: 1.8; }
 .empty-cart span { width: 58px; height: 58px; border: 1px dashed #aab1ad; border-radius: 50%; display: grid; place-items: center; font-size: 30px; font-weight: 300; }
 .cart-list { max-height: 430px; overflow: auto; overscroll-behavior: contain; }
-.cart-line { display: grid; grid-template-columns: 36px 1fr auto; gap: 13px; align-items: start; padding: 20px 28px; border-bottom: 1px solid var(--line); }
+.cart-line { display: grid; grid-template-columns: 42px 1fr auto; gap: 13px; align-items: start; padding: 20px 28px; border-bottom: 1px solid var(--line); transition: background .15s ease, opacity .15s ease; }
+.cart-line.is-dragging { background: #f3f7e5; opacity: .72; }
+.line-order { display: grid; justify-items: center; gap: 7px; }
 .line-number { color: #99a09d; font: 700 12px/1.4 ui-monospace, monospace; padding-top: 4px; }
+.drag-handle { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--green); cursor: grab; touch-action: none; user-select: none; }
+.drag-handle:active, .drag-handle[aria-pressed="true"] { cursor: grabbing; background: var(--lime); }
+.drag-handle span { font-size: 20px; line-height: 1; transform: rotate(90deg); }
 .line-main h3 { margin: 0; font-size: 16px; line-height: 1.45; }
 .line-main > p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
 .line-total { color: var(--green); font-size: 17px; white-space: nowrap; }
@@ -125,7 +130,9 @@ button { touch-action: manipulation; }
 .total-panel span { font-size: 18px; font-weight: 850; }
 .total-panel small { color: rgba(255,255,255,.65); margin-top: 3px; }
 .total-panel strong { font: 800 clamp(32px, 6vw, 48px)/1 Georgia, "Yu Mincho", serif; color: var(--lime); white-space: nowrap; }
-.checkout-actions { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 20px 26px 8px; }
+.checkout-actions { display: grid; grid-template-columns: auto auto 1fr; gap: 12px; padding: 20px 26px 8px; }
+.save-receipt-button { border: 1px solid rgba(12,56,47,.24); border-radius: 14px; background: white; color: var(--green); padding: 15px 18px; font-weight: 850; cursor: pointer; }
+.save-receipt-button:disabled { opacity: .45; cursor: not-allowed; }
 .print-button, .full-button, .save-button {
   border: 0; border-radius: 14px; background: var(--lime); color: var(--green); padding: 15px 20px; font-weight: 900; cursor: pointer;
 }
@@ -190,7 +197,7 @@ button { touch-action: manipulation; }
   .scan-panel { border-radius: 21px; }
   .receipt-card { border-radius: 21px; }
   .receipt-heading { padding: 22px 20px 16px; }
-  .cart-line { grid-template-columns: 27px 1fr; padding: 18px 19px; }
+  .cart-line { grid-template-columns: 38px 1fr; padding: 18px 15px; }
   .line-total { grid-column: 2; justify-self: end; margin-top: -28px; }
   .total-panel { padding: 21px 20px; }
   .checkout-actions { grid-template-columns: 1fr; padding: 16px 18px 7px; }

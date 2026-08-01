@@ -33,9 +33,19 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /<h1>KNレジ<\/h1>/);
   assert.match(html, /コードを読み取る/);
   assert.match(html, /お買い上げ商品/);
+  assert.match(html, /会計表を保存/);
   assert.match(html, /<strong>KNレジ 会計票<\/strong><span><\/span>/);
   assert.match(html, /role="status"/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
+});
+
+test("supports reordering and saving the current receipt", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+
+  assert.match(page, /function moveCartItem\(/);
+  assert.match(page, /onPointerMove=\{continueDragging\}/);
+  assert.match(page, /function saveReceipt\(\)/);
+  assert.match(page, /text\/csv;charset=utf-8/);
 });
 
 test("keeps receipt time deterministic until printing", async () => {
