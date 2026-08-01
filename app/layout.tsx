@@ -20,8 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "KNレジ",
     },
     icons: {
-      icon: "/favicon.svg",
-      apple: "/favicon.svg",
+      icon: [{ url: "/kn-logo.png", type: "image/png", sizes: "192x192" }],
+      apple: [{ url: "/kn-logo.png", type: "image/png", sizes: "192x192" }],
     },
     openGraph: {
       title,

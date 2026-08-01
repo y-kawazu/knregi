@@ -65,5 +65,8 @@ test("keeps receipt time deterministic until printing", async () => {
   assert.match(page, /<span>\{receiptTime\}<\/span>/);
   assert.doesNotMatch(page, /useState\(\(\) => new Date\(\)\)/);
   assert.match(layout, /KNレジ \| カメラでかんたん会計/);
+  assert.match(layout, /icon: \[\{ url: "\/kn-logo\.png"/);
+  assert.doesNotMatch(layout, /favicon\.svg/);
   assert.match(manifest, /"name": "KNレジ"/);
+  assert.match(manifest, /"src": "\/kn-logo\.png"/);
 });
