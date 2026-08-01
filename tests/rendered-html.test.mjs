@@ -37,8 +37,10 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /PDFで保存/);
   assert.doesNotMatch(html, /KNレジ 会計票/);
   assert.match(html, /有限会社河津内装/);
-  assert.match(html, /〒811-2112福岡県糟屋郡須惠町植木184-23/);
+  assert.match(html, /〒811-2112/);
+  assert.match(html, /福岡県糟屋郡須惠町植木814-23/);
   assert.match(html, /☎092-936-0919/);
+  assert.doesNotMatch(html, /<span>お客様名<\/span>/);
   assert.match(html, /role="status"/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
 });

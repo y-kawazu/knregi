@@ -605,7 +605,6 @@ export default function Home() {
           <div className="receipt-meta print-only">
             <span className="document-date">{receiptTime}</span>
             <p className="document-customer">
-              <span>お客様名</span>
               <strong>{customerName.trim()} 様</strong>
             </p>
           </div>
@@ -677,9 +676,12 @@ export default function Home() {
             PDF保存：Appleの共有画面から「ファイルに保存」→ iCloud Drive ／ 印刷：AirPrint対応プリンターを選択
           </p>
           <footer className="receipt-footer print-only">
-            <strong>有限会社河津内装</strong>
-            <span>〒811-2112福岡県糟屋郡須惠町植木184-23</span>
-            <span>☎092-936-0919</span>
+            <div className="company-block">
+              <strong>有限会社河津内装</strong>
+              <span>〒811-2112</span>
+              <span>福岡県糟屋郡須惠町植木814-23</span>
+              <span>☎092-936-0919</span>
+            </div>
           </footer>
         </section>
       </section>
