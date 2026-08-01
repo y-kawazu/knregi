@@ -201,8 +201,6 @@ button { touch-action: manipulation; }
 .pdf-capture .receipt-heading { padding: 0 0 15px; align-items: flex-end; border-bottom: 2px solid black; }
 .pdf-capture .receipt-heading .section-kicker { display: none; }
 .pdf-capture .receipt-title-group { align-items: center; }
-.pdf-capture .document-logo { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 8px; background: url("/kn-logo.png") center / cover no-repeat; }
-.pdf-capture .document-en { margin: 0 0 3px; color: #155f4f; font: 700 9px/1.2 Arial, sans-serif; letter-spacing: .16em; }
 .pdf-capture .receipt-heading h2 { margin: 0; font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
 .pdf-capture .item-count { font-size: 24px; color: black; }
 .pdf-capture .receipt-meta { padding: 10px 0 14px; font-size: 11px; border-bottom: 1px solid #777; }
@@ -267,8 +265,6 @@ button { touch-action: manipulation; }
   .receipt-heading { padding: 0 0 4mm; align-items: flex-end; border-bottom: 2px solid black; }
   .receipt-heading .section-kicker { display: none; }
   .receipt-title-group { align-items: center; }
-  .document-logo { width: 9mm; height: 9mm; flex: 0 0 auto; border-radius: 2mm; background: url("/kn-logo.png") center / cover no-repeat; }
-  .document-en { margin: 0 0 1mm; color: #155f4f; font: 700 9px/1.2 Arial, sans-serif; letter-spacing: .16em; }
   .receipt-heading h2 { margin: 0; font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
   .item-count { font-size: 24px; color: black; }
   .receipt-meta { padding: 3mm 0 4mm; font-size: 11px; border-bottom: 1px solid #777; }

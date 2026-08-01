@@ -41,8 +41,9 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /福岡県糟屋郡須惠町植木814-23/);
   assert.match(html, /☎092-936-0919/);
   assert.doesNotMatch(html, /<span>お客様名<\/span>/);
-  assert.match(html, /DELIVERY SLIP/);
-  assert.match(html, /小計（税抜）/);
+  assert.doesNotMatch(html, /DELIVERY SLIP|document-logo/);
+  assert.match(html, /<span>小計<\/span>/);
+  assert.doesNotMatch(html, /小計（税抜）/);
   assert.match(html, /消費税（10%）/);
   assert.match(html, /合計/);
   assert.match(html, /role="status"/);

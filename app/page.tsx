@@ -598,9 +598,7 @@ export default function Home() {
         <section className="receipt-card" aria-label="会計一覧" ref={receiptRef}>
           <div className="receipt-heading">
             <div className="receipt-title-group">
-              <span className="document-logo print-only" aria-hidden="true" />
               <div>
-                <p className="document-en print-only">DELIVERY SLIP</p>
                 <p className="section-kicker">現在の会計</p>
                 <h2>納品書</h2>
               </div>
@@ -671,7 +669,7 @@ export default function Home() {
 
           <div className="total-panel">
             <div className="tax-breakdown">
-              <p><span>小計（税抜）</span><strong>{yen(subtotal)}</strong></p>
+              <p><span>小計</span><strong>{yen(subtotal)}</strong></p>
               <p><span>消費税（10%）</span><strong>{yen(consumptionTax)}</strong></p>
             </div>
             <div className="grand-total">
