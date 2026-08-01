@@ -441,10 +441,16 @@ export default function Home() {
       capture.classList.add("pdf-capture");
       document.body.appendChild(capture);
 
+      await document.fonts.ready;
+      const captureHeight = Math.ceil(capture.scrollHeight) + 16;
+      capture.style.height = `${captureHeight}px`;
+
       const canvas = await html2canvas(capture, {
         backgroundColor: "#ffffff",
+        height: captureHeight,
         scale: 2,
         useCORS: true,
+        windowHeight: captureHeight,
         logging: false,
       });
       const pdfWidth = 80;

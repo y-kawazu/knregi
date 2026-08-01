@@ -48,6 +48,8 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /import\("html2canvas"\)/);
   assert.match(page, /navigator\.share/);
   assert.match(page, /application\/pdf/);
+  assert.match(page, /capture\.scrollHeight/);
+  assert.match(page, /windowHeight: captureHeight/);
   assert.doesNotMatch(page, /text\/csv;charset=utf-8/);
 });
 
