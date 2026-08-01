@@ -41,6 +41,10 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /福岡県糟屋郡須惠町植木814-23/);
   assert.match(html, /☎092-936-0919/);
   assert.doesNotMatch(html, /<span>お客様名<\/span>/);
+  assert.match(html, /DELIVERY SLIP/);
+  assert.match(html, /小計（税抜）/);
+  assert.match(html, /消費税（10%）/);
+  assert.match(html, /合計/);
   assert.match(html, /role="status"/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/);
 });
@@ -56,6 +60,8 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /application\/pdf/);
   assert.match(page, /capture\.scrollHeight/);
   assert.match(page, /windowHeight: captureHeight/);
+  assert.match(page, /Math\.floor\(subtotal \* 0\.1\)/);
+  assert.match(page, /価格（税抜・円）/);
   assert.doesNotMatch(page, /text\/csv;charset=utf-8/);
 });
 

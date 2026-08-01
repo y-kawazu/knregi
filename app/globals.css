@@ -110,6 +110,7 @@ button { touch-action: manipulation; }
 .receipt-card { overflow: hidden; min-height: 660px; position: sticky; top: 16px; }
 .receipt-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px 30px 20px; border-bottom: 1px solid var(--line); }
 .receipt-heading h2 { margin-bottom: 0; }
+.receipt-title-group { display: flex; align-items: center; gap: 11px; }
 .item-count { display: flex; align-items: baseline; gap: 3px; font: 800 clamp(30px, 6vw, 46px)/1 Georgia, serif; color: var(--green); }
 .item-count small { font: 700 13px/1 system-ui, sans-serif; }
 
@@ -130,11 +131,16 @@ button { touch-action: manipulation; }
 .quantity-controls button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--green); font-size: 20px; cursor: pointer; }
 .quantity-controls strong { min-width: 22px; text-align: center; }
 
-.total-panel { margin: 0; padding: 24px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; background: var(--green); color: white; }
-.total-panel div { display: grid; }
-.total-panel span { font-size: 18px; font-weight: 850; }
-.total-panel small { color: rgba(255,255,255,.65); margin-top: 3px; }
-.total-panel strong { font: 800 clamp(32px, 6vw, 48px)/1 Georgia, "Yu Mincho", serif; color: var(--lime); white-space: nowrap; }
+.total-panel { margin: 0; padding: 22px 30px 24px; display: grid; gap: 18px; background: var(--green); color: white; }
+.tax-breakdown { display: grid; gap: 7px; }
+.tax-breakdown p { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.tax-breakdown span { color: rgba(255,255,255,.72); font-size: 12px; font-weight: 750; }
+.tax-breakdown strong { color: white; font-size: 15px; white-space: nowrap; }
+.grand-total { padding-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid rgba(255,255,255,.25); }
+.grand-total > div { display: grid; }
+.grand-total span { font-size: 18px; font-weight: 850; }
+.grand-total small { color: rgba(255,255,255,.65); margin-top: 3px; }
+.grand-total > strong { font: 800 clamp(32px, 6vw, 48px)/1 Georgia, "Yu Mincho", serif; color: var(--lime); white-space: nowrap; }
 .checkout-actions { display: grid; grid-template-columns: auto auto 1fr; gap: 12px; padding: 20px 26px 8px; }
 .save-receipt-button { border: 1px solid rgba(12,56,47,.24); border-radius: 14px; background: white; color: var(--green); padding: 15px 18px; font-weight: 850; cursor: pointer; }
 .save-receipt-button:disabled { opacity: .45; cursor: not-allowed; }
@@ -187,28 +193,37 @@ button { touch-action: manipulation; }
 
 .receipt-card.pdf-capture {
   position: fixed; inset: 0 auto auto 0; z-index: 1000; width: 302px; height: auto; min-height: 0; max-height: none; overflow: visible;
-  border: 0; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
+  border: 0; border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
   pointer-events: none;
 }
 .pdf-capture .no-print { display: none !important; }
 .pdf-capture .print-only { display: block; }
 .pdf-capture .receipt-heading { padding: 0 0 15px; align-items: flex-end; border-bottom: 2px solid black; }
 .pdf-capture .receipt-heading .section-kicker { display: none; }
-.pdf-capture .receipt-heading h2 { font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
+.pdf-capture .receipt-title-group { align-items: center; }
+.pdf-capture .document-logo { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 8px; background: url("/kn-logo.png") center / cover no-repeat; }
+.pdf-capture .document-en { margin: 0 0 3px; color: #155f4f; font: 700 9px/1.2 Arial, sans-serif; letter-spacing: .16em; }
+.pdf-capture .receipt-heading h2 { margin: 0; font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
 .pdf-capture .item-count { font-size: 24px; color: black; }
 .pdf-capture .receipt-meta { padding: 10px 0 14px; font-size: 11px; border-bottom: 1px solid #777; }
 .pdf-capture .receipt-meta > span { display: block; text-align: right; }
 .pdf-capture .document-customer { margin: 14px 0 0; padding-bottom: 7px; border-bottom: 1px solid #333; }
 .pdf-capture .document-customer strong { font-size: 16px; font-weight: 600; }
+.pdf-capture .document-table-head { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; padding: 8px 0 6px; border-bottom: 2px solid #155f4f; color: #155f4f; font-size: 8px; font-weight: 800; }
+.pdf-capture .document-table-head span:last-child { text-align: right; }
 .pdf-capture .cart-list { max-height: none; overflow: visible; }
 .pdf-capture .cart-line, .pdf-capture .cart-line.is-dragging { grid-template-columns: 30px 1fr auto; gap: 8px; padding: 11px 0; background: white; box-shadow: none; break-inside: avoid; }
 .pdf-capture .line-main h3 { font-size: 12px; }
 .pdf-capture .line-main > p, .pdf-capture .line-number { font-size: 9px; color: #333; }
 .pdf-capture .line-total { color: black; font-size: 12px; }
 .pdf-capture .quantity-print { display: block !important; }
-.pdf-capture .total-panel { margin-top: 11px; padding: 15px 0; background: white; color: black; border-top: 2px solid black; border-bottom: 2px solid black; }
-.pdf-capture .total-panel small, .pdf-capture .total-panel strong { color: black; }
-.pdf-capture .total-panel strong { font-size: 28px; }
+.pdf-capture .total-panel { width: 195px; margin: 14px 0 0 auto; padding: 10px 0 12px; gap: 9px; background: white; color: black; border-top: 2px solid #155f4f; border-bottom: 2px solid #155f4f; }
+.pdf-capture .tax-breakdown { gap: 5px; }
+.pdf-capture .tax-breakdown span, .pdf-capture .tax-breakdown strong { color: #333; font-size: 10px; }
+.pdf-capture .grand-total { padding-top: 9px; border-top: 1px solid #777; }
+.pdf-capture .grand-total span { color: black; font-size: 14px; }
+.pdf-capture .grand-total small { color: #555; font-size: 9px; }
+.pdf-capture .grand-total > strong { color: black; font-size: 26px; }
 .pdf-capture .receipt-footer { padding: 30px 0 12px; font-size: 11px; }
 .pdf-capture .company-block { width: max-content; max-width: 100%; margin-left: auto; text-align: left; }
 .pdf-capture .company-block strong, .pdf-capture .company-block span { display: block; }
@@ -248,23 +263,33 @@ button { touch-action: manipulation; }
   .print-only { display: block; }
   .app-shell, .checkout-grid { display: block; width: auto; min-height: 0; margin: 0; padding: 0; }
   .receipt-card { display: block; min-height: 0; border: 0; border-radius: 0; box-shadow: none; background: white; }
+  .receipt-card { border-top: 1.5mm solid #155f4f; border-bottom: 1.5mm solid #155f4f; }
   .receipt-heading { padding: 0 0 4mm; align-items: flex-end; border-bottom: 2px solid black; }
   .receipt-heading .section-kicker { display: none; }
-  .receipt-heading h2 { font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
+  .receipt-title-group { align-items: center; }
+  .document-logo { width: 9mm; height: 9mm; flex: 0 0 auto; border-radius: 2mm; background: url("/kn-logo.png") center / cover no-repeat; }
+  .document-en { margin: 0 0 1mm; color: #155f4f; font: 700 9px/1.2 Arial, sans-serif; letter-spacing: .16em; }
+  .receipt-heading h2 { margin: 0; font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
   .item-count { font-size: 24px; color: black; }
   .receipt-meta { padding: 3mm 0 4mm; font-size: 11px; border-bottom: 1px solid #777; }
   .receipt-meta > span { display: block; text-align: right; }
   .document-customer { margin: 4mm 0 0; padding-bottom: 2mm; border-bottom: 1px solid #333; }
   .document-customer strong { font-size: 16px; font-weight: 600; }
+  .document-table-head { display: grid; grid-template-columns: 8mm 1fr auto; gap: 2mm; padding: 2mm 0 1.5mm; border-bottom: 2px solid #155f4f; color: #155f4f; font-size: 8px; font-weight: 800; }
+  .document-table-head span:last-child { text-align: right; }
   .cart-list { max-height: none; overflow: visible; }
   .cart-line, .cart-line.is-dragging { grid-template-columns: 8mm 1fr auto; gap: 2mm; padding: 3mm 0; background: white; box-shadow: none; break-inside: avoid; }
   .line-main h3 { font-size: 12px; }
   .line-main > p, .line-number { font-size: 9px; color: #333; }
   .line-total { color: black; font-size: 12px; }
   .quantity-print { display: block !important; }
-  .total-panel { margin-top: 3mm; padding: 4mm 0; background: white; color: black; border-top: 2px solid black; border-bottom: 2px solid black; }
-  .total-panel small { color: black; }
-  .total-panel strong { color: black; font-size: 28px; }
+  .total-panel { width: 52mm; margin: 4mm 0 0 auto; padding: 3mm 0; gap: 2mm; background: white; color: black; border-top: 2px solid #155f4f; border-bottom: 2px solid #155f4f; }
+  .tax-breakdown { gap: 1.5mm; }
+  .tax-breakdown span, .tax-breakdown strong { color: #333; font-size: 10px; }
+  .grand-total { padding-top: 2.5mm; border-top: 1px solid #777; }
+  .grand-total span { color: black; font-size: 14px; }
+  .grand-total small { color: #555; font-size: 9px; }
+  .grand-total > strong { color: black; font-size: 26px; }
   .receipt-footer { padding-top: 8mm; font-size: 11px; }
   .company-block { width: max-content; max-width: 100%; margin-left: auto; text-align: left; }
   .company-block strong, .company-block span { display: block; }

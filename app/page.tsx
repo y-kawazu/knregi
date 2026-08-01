@@ -188,10 +188,12 @@ export default function Home() {
     () => cart.reduce((sum, item) => sum + item.quantity, 0),
     [cart],
   );
-  const total = useMemo(
+  const subtotal = useMemo(
     () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cart],
   );
+  const consumptionTax = useMemo(() => Math.floor(subtotal * 0.1), [subtotal]);
+  const total = subtotal + consumptionTax;
 
   function prepareScanAudio() {
     try {
@@ -595,9 +597,13 @@ export default function Home() {
 
         <section className="receipt-card" aria-label="会計一覧" ref={receiptRef}>
           <div className="receipt-heading">
-            <div>
-              <p className="section-kicker">現在の会計</p>
-              <h2>納品書</h2>
+            <div className="receipt-title-group">
+              <span className="document-logo print-only" aria-hidden="true" />
+              <div>
+                <p className="document-en print-only">DELIVERY SLIP</p>
+                <p className="section-kicker">現在の会計</p>
+                <h2>納品書</h2>
+              </div>
             </div>
             <div className="item-count">{itemCount}<small>点</small></div>
           </div>
@@ -608,6 +614,14 @@ export default function Home() {
               <strong>{customerName.trim()} 様</strong>
             </p>
           </div>
+
+          {cart.length > 0 && (
+            <div className="document-table-head print-only">
+              <span>No.</span>
+              <span>品名・単価（税抜）</span>
+              <span>金額（税抜）</span>
+            </div>
+          )}
 
           {cart.length === 0 ? (
             <div className="empty-cart">
@@ -641,7 +655,7 @@ export default function Home() {
                   </div>
                   <div className="line-main">
                     <h3>{item.name}</h3>
-                    <p>{item.code} · 単価 {yen(item.price)}</p>
+                    <p>{item.code} · 単価（税抜） {yen(item.price)}</p>
                     <div className="quantity-controls no-print" aria-label={`${item.name}の数量`}>
                       <button type="button" onClick={() => changeQuantity(item.code, -1)} aria-label="数量を1減らす">−</button>
                       <strong>{item.quantity}</strong>
@@ -656,11 +670,17 @@ export default function Home() {
           )}
 
           <div className="total-panel">
-            <div>
-              <span>合計</span>
-              <small>税込</small>
+            <div className="tax-breakdown">
+              <p><span>小計（税抜）</span><strong>{yen(subtotal)}</strong></p>
+              <p><span>消費税（10%）</span><strong>{yen(consumptionTax)}</strong></p>
             </div>
-            <strong>{yen(total)}</strong>
+            <div className="grand-total">
+              <div>
+                <span>合計</span>
+                <small>税込</small>
+              </div>
+              <strong>{yen(total)}</strong>
+            </div>
           </div>
 
           <div className="checkout-actions no-print">
@@ -767,7 +787,7 @@ export default function Home() {
               <input value={editingName} onChange={(event) => setEditingName(event.target.value)} autoComplete="off" autoFocus required />
             </label>
             <label>
-              価格（税込・円）
+              価格（税抜・円）
               <input type="number" min="0" step="1" inputMode="numeric" value={editingPrice} onChange={(event) => setEditingPrice(event.target.value)} required />
             </label>
             <div className="form-actions">
