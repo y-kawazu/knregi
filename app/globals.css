@@ -149,6 +149,14 @@ button { touch-action: manipulation; }
 .scan-guide span { width: 100%; height: 2px; background: #ff6a5d; box-shadow: 0 0 10px #ff6a5d; animation: scanning 2s ease-in-out infinite; }
 @keyframes scanning { 0%,100% { transform: translateY(-70px); } 50% { transform: translateY(70px); } }
 .scanner-message { min-height: 22px; color: var(--muted); text-align: center; font-size: 13px; }
+.scan-result {
+  margin-top: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  border: 1px solid rgba(42,157,114,.28); border-radius: 15px; background: #edf7f1; color: var(--green);
+}
+.scan-result > span { width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: #2a9d72; color: white; font-weight: 900; }
+.scan-result div { display: grid; gap: 3px; }
+.scan-result strong { font-size: 16px; }
+.scan-result small { color: #47675e; font-size: 12px; }
 .full-button { width: 100%; background: var(--green); color: white; }
 
 .catalog-toolbar { margin: 16px 0; display: flex; justify-content: space-between; gap: 14px; align-items: center; }

@@ -80,6 +80,7 @@ export default function Home() {
   const [manualCode, setManualCode] = useState("");
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scannerMessage, setScannerMessage] = useState("カメラを商品コードに向けてください");
+  const [lastScannedProduct, setLastScannedProduct] = useState<Product | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [editingCode, setEditingCode] = useState("");
@@ -91,6 +92,7 @@ export default function Home() {
   const [hydrated, setHydrated] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const lastScanRef = useRef({ value: "", time: 0 });
   const manualInputRef = useRef<HTMLInputElement>(null);
 
@@ -148,8 +150,8 @@ export default function Home() {
           const now = Date.now();
           if (lastScanRef.current.value === value && now - lastScanRef.current.time < 1400) return;
           lastScanRef.current = { value, time: now };
+          playScanSound();
           handleCode(value);
-          setScannerMessage(`読取成功：${value}`);
         },
       )
       .then((controls) => {
@@ -181,6 +183,49 @@ export default function Home() {
     [cart],
   );
 
+  function prepareScanAudio() {
+    try {
+      const context = audioContextRef.current ?? new AudioContext();
+      audioContextRef.current = context;
+      if (context.state === "suspended") void context.resume();
+    } catch {
+      // Scanning remains usable if a browser blocks Web Audio.
+    }
+  }
+
+  function playScanSound() {
+    try {
+      const context = audioContextRef.current ?? new AudioContext();
+      audioContextRef.current = context;
+      if (context.state === "suspended") void context.resume();
+
+      const start = context.currentTime;
+      [880, 1175].forEach((frequency, index) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const toneStart = start + index * 0.09;
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, toneStart);
+        gain.gain.setValueAtTime(0.0001, toneStart);
+        gain.gain.exponentialRampToValueAtTime(0.16, toneStart + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, toneStart + 0.085);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(toneStart);
+        oscillator.stop(toneStart + 0.09);
+      });
+    } catch {
+      // Visual confirmation still communicates a successful scan.
+    }
+  }
+
+  function openScanner() {
+    prepareScanAudio();
+    setLastScannedProduct(null);
+    setScannerMessage("カメラを起動しています…");
+    setScannerOpen(true);
+  }
+
   function addToCart(product: Product) {
     setCart((current) => {
       const existing = current.find((item) => item.code === product.code);
@@ -202,6 +247,8 @@ export default function Home() {
         return [...withoutSameCode, smartProduct].sort((a, b) => a.name.localeCompare(b.name, "ja"));
       });
       addToCart(smartProduct);
+      setLastScannedProduct(smartProduct);
+      setScannerMessage(`${smartProduct.name}を会計に追加しました`);
       return;
     }
 
@@ -210,6 +257,8 @@ export default function Home() {
     const product = products.find((item) => item.code === code);
     if (product) {
       addToCart(product);
+      setLastScannedProduct(product);
+      setScannerMessage(`${product.name}を会計に追加しました`);
       return;
     }
 
@@ -217,6 +266,7 @@ export default function Home() {
     setEditingName("");
     setEditingPrice("");
     setAddAfterSave(true);
+    setLastScannedProduct(null);
     setScannerOpen(false);
     setRegisterOpen(true);
     setNotice("未登録の商品です。商品名と価格を登録してください。");
@@ -323,7 +373,7 @@ export default function Home() {
               <h2>コードを読み取る</h2>
               <p>iPad・iPhoneの背面カメラでバーコードまたはQRコードをスキャンします。</p>
             </div>
-            <button className="scan-button" type="button" onClick={() => setScannerOpen(true)}>
+            <button className="scan-button" type="button" onClick={openScanner}>
               <span className="scan-icon" aria-hidden="true" />
               カメラでスキャン
             </button>
@@ -431,7 +481,16 @@ export default function Home() {
               <video ref={videoRef} playsInline muted />
               <div className="scan-guide" aria-hidden="true"><span /></div>
             </div>
-            <p className="scanner-message">{scannerMessage}</p>
+            {lastScannedProduct && (
+              <div className="scan-result" role="status" aria-live="assertive">
+                <span aria-hidden="true">✓</span>
+                <div>
+                  <strong>{lastScannedProduct.name}</strong>
+                  <small>{yen(lastScannedProduct.price)}を会計に追加しました</small>
+                </div>
+              </div>
+            )}
+            <p className="scanner-message" role="status">{scannerMessage}</p>
             <button className="full-button" type="button" onClick={() => setScannerOpen(false)}>スキャンを終了</button>
           </div>
         </div>
