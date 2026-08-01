@@ -92,6 +92,7 @@ export default function Home() {
   const [draggingCode, setDraggingCode] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const receiptRef = useRef<HTMLElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const lastScanRef = useRef({ value: "", time: 0 });
@@ -413,14 +414,89 @@ export default function Home() {
     window.setTimeout(() => window.print(), 60);
   }
 
-  function saveReceipt() {
+  async function saveReceipt() {
     if (cart.length === 0) {
       setNotice("保存する商品がありません。");
       return;
     }
-    setReceiptTime(new Date().toLocaleString("ja-JP"));
-    setNotice("共有から「ファイルに保存」を選び、iCloud DriveへPDF保存してください。");
-    window.setTimeout(() => window.print(), 60);
+
+    const receipt = receiptRef.current;
+    if (!receipt) return;
+
+    const savedAt = new Date();
+    setReceiptTime(savedAt.toLocaleString("ja-JP"));
+    setNotice("会計表のPDFを作成しています…");
+
+    let capture: HTMLElement | null = null;
+    try {
+      await new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => window.requestAnimationFrame(() => resolve()));
+      });
+
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      capture = receipt.cloneNode(true) as HTMLElement;
+      capture.classList.add("pdf-capture");
+      document.body.appendChild(capture);
+
+      const canvas = await html2canvas(capture, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      const pdfWidth = 80;
+      const pdfHeight = Math.max(80, (canvas.height * pdfWidth) / canvas.width);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [pdfWidth, pdfHeight],
+      });
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfWidth, pdfHeight);
+
+      const timestamp = [
+        savedAt.getFullYear(),
+        String(savedAt.getMonth() + 1).padStart(2, "0"),
+        String(savedAt.getDate()).padStart(2, "0"),
+        "-",
+        String(savedAt.getHours()).padStart(2, "0"),
+        String(savedAt.getMinutes()).padStart(2, "0"),
+      ].join("");
+      const fileName = `KNレジ_会計表_${timestamp}.pdf`;
+      const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "KNレジ 会計表",
+          });
+          setNotice("会計表のPDFを共有しました。");
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            setNotice("PDFの保存をキャンセルしました。");
+            return;
+          }
+          throw error;
+        }
+      } else {
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setNotice("会計表のPDFを保存しました。");
+      }
+    } catch {
+      setNotice("PDFを作成できませんでした。もう一度お試しください。");
+    } finally {
+      capture?.remove();
+    }
   }
 
   return (
@@ -481,7 +557,7 @@ export default function Home() {
           </section>
         </div>
 
-        <section className="receipt-card" aria-label="会計一覧">
+        <section className="receipt-card" aria-label="会計一覧" ref={receiptRef}>
           <div className="receipt-heading">
             <div>
               <p className="section-kicker">現在の会計</p>
@@ -559,7 +635,7 @@ export default function Home() {
             </button>
           </div>
           <p className="print-note no-print">
-            PDF保存：共有 → ファイルに保存 → iCloud Drive ／ 印刷：AirPrint対応プリンターを選択
+            PDF保存：Appleの共有画面から「ファイルに保存」→ iCloud Drive ／ 印刷：AirPrint対応プリンターを選択
           </p>
           <footer className="receipt-footer print-only">ご利用ありがとうございました</footer>
         </section>

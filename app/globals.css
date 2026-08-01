@@ -180,6 +180,30 @@ button { touch-action: manipulation; }
 .form-actions > button:first-child { border: 1px solid var(--line); background: white; border-radius: 14px; padding: 13px 16px; cursor: pointer; }
 .receipt-meta, .print-only, .receipt-footer { display: none; }
 
+.receipt-card.pdf-capture {
+  position: fixed; inset: 0 auto auto 0; z-index: 1000; width: 302px; min-height: 0; overflow: visible;
+  border: 0; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
+  pointer-events: none;
+}
+.pdf-capture .no-print { display: none !important; }
+.pdf-capture .print-only { display: block; }
+.pdf-capture .receipt-heading { padding: 0 0 15px; border-bottom: 1px dashed #555; }
+.pdf-capture .receipt-heading .section-kicker { display: none; }
+.pdf-capture .receipt-heading h2 { font-size: 18px; }
+.pdf-capture .item-count { font-size: 24px; color: black; }
+.pdf-capture .receipt-meta { padding: 11px 0; font-size: 11px; border-bottom: 1px dashed #555; }
+.pdf-capture .receipt-meta span { display: block; margin-top: 4px; }
+.pdf-capture .cart-list { max-height: none; overflow: visible; }
+.pdf-capture .cart-line { grid-template-columns: 30px 1fr auto; gap: 8px; padding: 11px 0; break-inside: avoid; }
+.pdf-capture .line-main h3 { font-size: 12px; }
+.pdf-capture .line-main > p, .pdf-capture .line-number { font-size: 9px; color: #333; }
+.pdf-capture .line-total { color: black; font-size: 12px; }
+.pdf-capture .quantity-print { display: block !important; }
+.pdf-capture .total-panel { margin-top: 11px; padding: 15px 0; background: white; color: black; border-top: 2px solid black; border-bottom: 2px solid black; }
+.pdf-capture .total-panel small, .pdf-capture .total-panel strong { color: black; }
+.pdf-capture .total-panel strong { font-size: 28px; }
+.pdf-capture .receipt-footer { padding-top: 30px; text-align: center; font-size: 11px; }
+
 @media (max-width: 820px) {
   .checkout-grid { grid-template-columns: 1fr; }
   .receipt-card { position: static; min-height: 0; }

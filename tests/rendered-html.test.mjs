@@ -45,7 +45,9 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /function moveCartItem\(/);
   assert.match(page, /onPointerMove=\{continueDragging\}/);
   assert.match(page, /function saveReceipt\(\)/);
-  assert.match(page, /iCloud DriveへPDF保存/);
+  assert.match(page, /import\("html2canvas"\)/);
+  assert.match(page, /navigator\.share/);
+  assert.match(page, /application\/pdf/);
   assert.doesNotMatch(page, /text\/csv;charset=utf-8/);
 });
 
