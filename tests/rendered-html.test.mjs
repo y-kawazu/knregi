@@ -63,6 +63,7 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /iPad\|iPhone\|iPod/);
   assert.match(page, /URLSearchParams\(window\.location\.search\)\.has\("download"\)/);
   assert.match(page, /!forceDownload && isAppleMobile && navigator\.canShare/);
+  assert.match(page, /PDFファイルを取得/);
   assert.match(page, /navigator\.share/);
   assert.match(page, /application\/pdf/);
   assert.match(page, /capture\.scrollHeight/);

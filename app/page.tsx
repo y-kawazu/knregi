@@ -518,10 +518,22 @@ export default function Home() {
         link.href = url;
         link.download = fileName;
         document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        setNotice("納品書のPDFを保存しました。");
+        if (forceDownload) {
+          link.textContent = "PDFファイルを取得";
+          link.className = "pdf-verification-link";
+          link.addEventListener("click", () => {
+            window.setTimeout(() => {
+              link.remove();
+              URL.revokeObjectURL(url);
+            }, 1000);
+          }, { once: true });
+          setNotice("確認用PDFを作成しました。PDFファイルを取得してください。");
+        } else {
+          link.click();
+          link.remove();
+          window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+          setNotice("納品書のPDFを保存しました。");
+        }
       }
     } catch {
       setNotice("PDFを作成できませんでした。もう一度お試しください。");
