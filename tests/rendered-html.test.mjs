@@ -61,7 +61,8 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /Math\.max\(capture\.scrollWidth, capture\.getBoundingClientRect\(\)\.width\)/);
   assert.match(page, /windowWidth: captureWidth/);
   assert.match(page, /iPad\|iPhone\|iPod/);
-  assert.match(page, /isAppleMobile && navigator\.canShare/);
+  assert.match(page, /URLSearchParams\(window\.location\.search\)\.has\("download"\)/);
+  assert.match(page, /!forceDownload && isAppleMobile && navigator\.canShare/);
   assert.match(page, /navigator\.share/);
   assert.match(page, /application\/pdf/);
   assert.match(page, /capture\.scrollHeight/);

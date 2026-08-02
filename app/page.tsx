@@ -496,8 +496,9 @@ export default function Home() {
       const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
       const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent)
         || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const forceDownload = new URLSearchParams(window.location.search).has("download");
 
-      if (isAppleMobile && navigator.canShare?.({ files: [file] })) {
+      if (!forceDownload && isAppleMobile && navigator.canShare?.({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
