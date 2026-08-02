@@ -193,7 +193,7 @@ button { touch-action: manipulation; }
 
 .receipt-card.pdf-capture {
   position: fixed; inset: 0 auto auto 0; z-index: 1000; width: 302px; height: auto; min-height: 0; max-height: none; overflow: visible;
-  border: 0; border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
+  padding-inline: 16px; border: 0; border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
   pointer-events: none;
 }
 .pdf-capture .no-print { display: none !important; }
@@ -223,10 +223,10 @@ button { touch-action: manipulation; }
 .pdf-capture .grand-total small { color: #555; font-size: 9px; }
 .pdf-capture .grand-total > strong { color: black; font-size: 26px; }
 .pdf-capture .receipt-footer { padding: 30px 0 12px; font-size: 11px; }
-.pdf-capture .company-block { width: max-content; max-width: 100%; margin-left: auto; text-align: left; }
+.pdf-capture .company-block { width: 230px; max-width: 100%; margin-left: auto; text-align: left; overflow-wrap: anywhere; }
 .pdf-capture .company-block strong, .pdf-capture .company-block span { display: block; }
 .pdf-capture .company-block strong { padding-bottom: 5px; border-bottom: 1px solid #777; font-size: 13px; letter-spacing: .05em; }
-.pdf-capture .company-block span { margin-top: 4px; }
+.pdf-capture .company-block span { margin-top: 4px; font-size: 10px; }
 
 @media (max-width: 820px) {
   .checkout-grid { grid-template-columns: 1fr; }

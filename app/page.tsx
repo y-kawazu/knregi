@@ -461,14 +461,17 @@ export default function Home() {
       document.body.appendChild(capture);
 
       await document.fonts.ready;
+      const captureWidth = Math.ceil(Math.max(capture.scrollWidth, capture.getBoundingClientRect().width));
       const captureHeight = Math.ceil(capture.scrollHeight) + 16;
       capture.style.height = `${captureHeight}px`;
 
       const canvas = await html2canvas(capture, {
         backgroundColor: "#ffffff",
+        width: captureWidth,
         height: captureHeight,
         scale: 2,
         useCORS: true,
+        windowWidth: captureWidth,
         windowHeight: captureHeight,
         logging: false,
       });
@@ -698,7 +701,7 @@ export default function Home() {
               <strong>有限会社河津内装</strong>
               <span>〒811-2112</span>
               <span>福岡県糟屋郡須惠町植木814-23</span>
-              <span>☎092-936-0919</span>
+              <span>TEL 092-936-0919</span>
             </div>
           </footer>
         </section>

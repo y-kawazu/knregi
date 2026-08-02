@@ -39,7 +39,8 @@ test("server-renders the KN register checkout", async () => {
   assert.match(html, /有限会社河津内装/);
   assert.match(html, /〒811-2112/);
   assert.match(html, /福岡県糟屋郡須惠町植木814-23/);
-  assert.match(html, /☎092-936-0919/);
+  assert.match(html, /TEL 092-936-0919/);
+  assert.doesNotMatch(html, /☎/);
   assert.doesNotMatch(html, /<span>お客様名<\/span>/);
   assert.doesNotMatch(html, /DELIVERY SLIP|document-logo/);
   assert.match(html, /<span>小計<\/span>/);
@@ -57,6 +58,8 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /onPointerMove=\{continueDragging\}/);
   assert.match(page, /function saveReceipt\(\)/);
   assert.match(page, /import\("html2canvas"\)/);
+  assert.match(page, /Math\.max\(capture\.scrollWidth, capture\.getBoundingClientRect\(\)\.width\)/);
+  assert.match(page, /windowWidth: captureWidth/);
   assert.match(page, /navigator\.share/);
   assert.match(page, /application\/pdf/);
   assert.match(page, /capture\.scrollHeight/);
