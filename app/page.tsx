@@ -494,8 +494,10 @@ export default function Home() {
       ].join("");
       const fileName = `納品書_${timestamp}.pdf`;
       const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
+      const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-      if (navigator.canShare?.({ files: [file] })) {
+      if (isAppleMobile && navigator.canShare?.({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
