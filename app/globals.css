@@ -192,8 +192,8 @@ button { touch-action: manipulation; }
 .receipt-meta, .print-only, .receipt-footer { display: none; }
 
 .receipt-card.pdf-capture {
-  position: fixed; inset: 0 auto auto 0; z-index: 1000; width: 302px; height: auto; min-height: 0; max-height: none; overflow: visible;
-  padding-inline: 16px; border: 0; border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
+  position: fixed; inset: 0 auto auto 0; z-index: 1000; display: flex; flex-direction: column; width: 794px; height: auto; min-height: 1123px; max-height: none; overflow: visible;
+  padding: 45px; border: 0; border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; border-radius: 0; box-shadow: none; background: white; color: black; font-family: "Yu Gothic", sans-serif;
   pointer-events: none;
 }
 .pdf-capture .no-print { display: none !important; }
@@ -222,7 +222,7 @@ button { touch-action: manipulation; }
 .pdf-capture .grand-total span { color: black; font-size: 14px; }
 .pdf-capture .grand-total small { color: #555; font-size: 9px; }
 .pdf-capture .grand-total > strong { color: black; font-size: 26px; }
-.pdf-capture .receipt-footer { padding: 30px 0 12px; font-size: 11px; }
+.pdf-capture .receipt-footer { margin-top: auto; padding: 30px 0 12px; font-size: 11px; }
 .pdf-capture .company-block { width: 230px; max-width: 100%; margin-left: auto; text-align: left; overflow-wrap: anywhere; }
 .pdf-capture .company-block strong, .pdf-capture .company-block span { display: block; }
 .pdf-capture .company-block strong { padding-bottom: 5px; border-bottom: 1px solid #777; font-size: 13px; letter-spacing: .05em; }
@@ -255,40 +255,40 @@ button { touch-action: manipulation; }
 }
 
 @media print {
-  @page { size: 80mm auto; margin: 7mm; }
-  body { background: white; color: black; font-family: "Yu Gothic", sans-serif; }
+  @page { size: A4 portrait; margin: 0; }
+  html, body { width: 794px; min-height: 1123px; background: white; color: black; font-family: "Yu Gothic", sans-serif; }
   .no-print, .modal-backdrop { display: none !important; }
   .print-only { display: block; }
   .app-shell, .checkout-grid { display: block; width: auto; min-height: 0; margin: 0; padding: 0; }
-  .receipt-card { display: block; min-height: 0; border: 0; border-radius: 0; box-shadow: none; background: white; }
-  .receipt-card { border-top: 1.5mm solid #155f4f; border-bottom: 1.5mm solid #155f4f; }
-  .receipt-heading { padding: 0 0 4mm; align-items: flex-end; border-bottom: 2px solid black; }
+  .receipt-card { display: flex; flex-direction: column; width: 794px; min-height: 1123px; padding: 45px; border: 0; border-radius: 0; box-shadow: none; background: white; }
+  .receipt-card { border-top: 6px solid #155f4f; border-bottom: 6px solid #155f4f; }
+  .receipt-heading { padding: 0 0 15px; align-items: flex-end; border-bottom: 2px solid black; }
   .receipt-heading .section-kicker { display: none; }
   .receipt-title-group { align-items: center; }
   .receipt-heading h2 { margin: 0; font: 600 22px/1.2 "Yu Mincho", "Hiragino Mincho ProN", serif; letter-spacing: .18em; }
   .item-count { font-size: 24px; color: black; }
-  .receipt-meta { padding: 3mm 0 4mm; font-size: 11px; border-bottom: 1px solid #777; }
+  .receipt-meta { padding: 11px 0 15px; font-size: 11px; border-bottom: 1px solid #777; }
   .receipt-meta > span { display: block; text-align: right; }
-  .document-customer { margin: 4mm 0 0; padding-bottom: 2mm; border-bottom: 1px solid #333; }
+  .document-customer { margin: 15px 0 0; padding-bottom: 7px; border-bottom: 1px solid #333; }
   .document-customer strong { font-size: 16px; font-weight: 600; }
-  .document-table-head { display: grid; grid-template-columns: 8mm 1fr auto; gap: 2mm; padding: 2mm 0 1.5mm; border-bottom: 2px solid #155f4f; color: #155f4f; font-size: 8px; font-weight: 800; }
+  .document-table-head { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; padding: 8px 0 6px; border-bottom: 2px solid #155f4f; color: #155f4f; font-size: 8px; font-weight: 800; }
   .document-table-head span:last-child { text-align: right; }
   .cart-list { max-height: none; overflow: visible; }
-  .cart-line, .cart-line.is-dragging { grid-template-columns: 8mm 1fr auto; gap: 2mm; padding: 3mm 0; background: white; box-shadow: none; break-inside: avoid; }
+  .cart-line, .cart-line.is-dragging { grid-template-columns: 30px 1fr auto; gap: 8px; padding: 11px 0; background: white; box-shadow: none; break-inside: avoid; }
   .line-main h3 { font-size: 12px; }
   .line-main > p, .line-number { font-size: 9px; color: #333; }
   .line-total { color: black; font-size: 12px; }
   .quantity-print { display: block !important; }
-  .total-panel { width: 52mm; margin: 4mm 0 0 auto; padding: 3mm 0; gap: 2mm; background: white; color: black; border-top: 2px solid #155f4f; border-bottom: 2px solid #155f4f; }
-  .tax-breakdown { gap: 1.5mm; }
+  .total-panel { width: 195px; margin: 14px 0 0 auto; padding: 10px 0 12px; gap: 9px; background: white; color: black; border-top: 2px solid #155f4f; border-bottom: 2px solid #155f4f; }
+  .tax-breakdown { gap: 5px; }
   .tax-breakdown span, .tax-breakdown strong { color: #333; font-size: 10px; }
-  .grand-total { padding-top: 2.5mm; border-top: 1px solid #777; }
+  .grand-total { padding-top: 9px; border-top: 1px solid #777; }
   .grand-total span { color: black; font-size: 14px; }
   .grand-total small { color: #555; font-size: 9px; }
   .grand-total > strong { color: black; font-size: 26px; }
-  .receipt-footer { padding-top: 8mm; font-size: 11px; }
-  .company-block { width: max-content; max-width: 100%; margin-left: auto; text-align: left; }
+  .receipt-footer { margin-top: auto; padding: 30px 0 12px; font-size: 11px; }
+  .company-block { width: 230px; max-width: 100%; margin-left: auto; text-align: left; overflow-wrap: anywhere; }
   .company-block strong, .company-block span { display: block; }
-  .company-block strong { padding-bottom: 1.5mm; border-bottom: 1px solid #777; font-size: 13px; letter-spacing: .05em; }
-  .company-block span { margin-top: 1mm; }
+  .company-block strong { padding-bottom: 5px; border-bottom: 1px solid #777; font-size: 13px; letter-spacing: .05em; }
+  .company-block span { margin-top: 4px; font-size: 10px; }
 }

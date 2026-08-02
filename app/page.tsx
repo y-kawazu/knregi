@@ -462,7 +462,7 @@ export default function Home() {
 
       await document.fonts.ready;
       const captureWidth = Math.ceil(Math.max(capture.scrollWidth, capture.getBoundingClientRect().width));
-      const captureHeight = Math.ceil(capture.scrollHeight) + 16;
+      const captureHeight = Math.ceil(Math.max(capture.scrollHeight, capture.getBoundingClientRect().height));
       capture.style.height = `${captureHeight}px`;
 
       const canvas = await html2canvas(capture, {
@@ -475,14 +475,24 @@ export default function Home() {
         windowHeight: captureHeight,
         logging: false,
       });
-      const pdfWidth = 80;
-      const pdfHeight = Math.max(80, (canvas.height * pdfWidth) / canvas.width);
+      const pdfWidth = 210;
+      const pdfHeight = 297;
+      const rawImageHeight = (canvas.height * pdfWidth) / canvas.width;
+      const imageHeight = rawImageHeight <= pdfHeight + 1 ? pdfHeight : rawImageHeight;
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
-        format: [pdfWidth, pdfHeight],
+        format: "a4",
       });
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfWidth, pdfHeight);
+      const imageData = canvas.toDataURL("image/png");
+      let imageOffset = 0;
+      let pageNumber = 0;
+      while (imageOffset < imageHeight - 0.1) {
+        if (pageNumber > 0) pdf.addPage("a4", "portrait");
+        pdf.addImage(imageData, "PNG", 0, -imageOffset, pdfWidth, imageHeight);
+        imageOffset += pdfHeight;
+        pageNumber += 1;
+      }
 
       const timestamp = [
         savedAt.getFullYear(),

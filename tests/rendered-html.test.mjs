@@ -65,6 +65,10 @@ test("supports reordering and saving the current receipt", async () => {
   assert.match(page, /!forceDownload && isAppleMobile && navigator\.canShare/);
   assert.match(page, /navigator\.share/);
   assert.match(page, /application\/pdf/);
+  assert.match(page, /const pdfWidth = 210/);
+  assert.match(page, /const pdfHeight = 297/);
+  assert.match(page, /format: "a4"/);
+  assert.match(page, /pdf\.addPage\("a4", "portrait"\)/);
   assert.match(page, /capture\.scrollHeight/);
   assert.match(page, /windowHeight: captureHeight/);
   assert.match(page, /Math\.floor\(subtotal \* 0\.1\)/);
