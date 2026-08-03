@@ -512,7 +512,6 @@ export default function Home() {
         try {
           await navigator.share({
             files: [file],
-            title: "納品書",
           });
           setNotice("納品書のPDFを共有しました。");
         } catch (error) {
